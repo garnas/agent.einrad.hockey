@@ -5,7 +5,10 @@ import logging
 import os
 
 import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Request
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("github-webhook")
@@ -22,7 +25,7 @@ def verify_signature(body: bytes, signature: str | None) -> bool:
     return hmac.compare_digest(expected, signature)
 
 
-@app.get("/webhook")
+@app.post("/webhook")
 async def github_webhook(
     request: Request,
     x_hub_signature_256: str | None = Header(default=None),
